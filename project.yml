@@ -1,0 +1,71 @@
+name: YellMe
+options:
+  bundleIdPrefix: com.takahiro
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 1
+
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: "11.0.0"
+
+targets:
+  YellMe:
+    type: application
+    platform: iOS
+    bundleId: com.takahiro.yellme
+    deploymentTarget: "17.0"
+    sources:
+      - Sources
+    resources:
+      - Resources
+      - path: Resources/GoogleService-Info.plist
+        optional: true
+    dependencies:
+      - package: Firebase
+        product: FirebaseAuth
+      - package: Firebase
+        product: FirebaseFirestore
+      - package: Firebase
+        product: FirebaseStorage
+    entitlements:
+      path: YellMe.entitlements
+      properties:
+        com.apple.developer.applesignin:
+          - Default
+    settings:
+      base:
+        PRODUCT_NAME: YellMe
+        INFOPLIST_FILE: Sources/Info.plist
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_ENTITLEMENTS: YellMe.entitlements
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleDisplayName: エールミー
+        CFBundleName: YellMe
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        LSRequiresIPhoneOS: true
+        UILaunchScreen:
+          UIColorName: AccentColor
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSCameraUsageDescription: プロフィール画像の設定に使用します
+        NSPhotoLibraryUsageDescription: プロフィール画像の設定に使用します
+
+  YellMeTests:
+    type: bundle.unit-test
+    platform: iOS
+    bundleId: com.takahiro.yellme.tests
+    sources:
+      - Tests
+    dependencies:
+      - target: YellMe

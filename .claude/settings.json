@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(xcodebuild:*)",
+      "Bash(xcodegen:*)",
+      "Bash(open YellMe.xcodeproj)",
+      "Bash(swift:*)",
+      "Bash(swiftlint:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-secrets.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
