@@ -38,39 +38,12 @@ service cloud.firestore {
       }
     }
 
-    // 投稿（作成者のみ更新・削除。userId のすり替え禁止）
+    // SNS用途（投稿・リアクション・フォロー）は無効化
     match /posts/{postId} {
-      allow read: if signedIn();
-      allow create: if signedIn()
-        && request.resource.data.userId == request.auth.uid
-        && isString(request.resource.data.userId)
-        && isString(request.resource.data.content);
-      allow update: if signedIn()
-        && resource.data.userId == request.auth.uid
-        && request.resource.data.userId == resource.data.userId
-        && request.resource.data.createdAt == resource.data.createdAt;
-      allow delete: if signedIn()
-        && resource.data.userId == request.auth.uid;
-
-      match /reactions/{reactionId} {
-        allow read: if signedIn();
-        allow create: if signedIn()
-          && request.resource.data.userId == request.auth.uid
-          && request.resource.data.id == reactionId
-          && request.resource.data.type in ["heart", "understood", "goodJob"];
-        allow update, delete: if signedIn()
-          && resource.data.userId == request.auth.uid;
-      }
+      allow read, write: if false;
     }
-
-    // フォロー（fromUserId / toUserId をデータに含める実装を想定）
     match /follows/{docId} {
-      allow read: if signedIn();
-      allow create: if signedIn()
-        && request.resource.data.fromUserId == request.auth.uid;
-      allow delete: if signedIn()
-        && resource.data.fromUserId == request.auth.uid;
-      allow update: if false;
+      allow read, write: if false;
     }
 
     match /{document=**} {

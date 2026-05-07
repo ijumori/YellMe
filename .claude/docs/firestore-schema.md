@@ -5,19 +5,13 @@
 ```
 users/{userId}           → User情報
 users/{userId}/dailyEntries/{yyyy-MM-dd} → 1日記録（日記/できたこと/AIエール/回数）
-posts/{postId}           → 投稿・AIフィードバック
-posts/{postId}/reactions → リアクション
-follows/{docId}          → フォロー関係（Security Rules 用に `fromUserId` / `toUserId` フィールド必須）
 ```
 
 ## データモデル
 
 ```swift
-Post     { id, userId, content, createdAt, aiFeedback?, reactions[] }
 AIFeedback { mode: FeedbackMode, content: String, createdAt: Date }  // Equatable必須
 FeedbackMode: praise | empathy | advice | courage
-Reaction { id, userId, type: ReactionType, createdAt }
-ReactionType: heart | understood | goodJob
 User     { id, displayName, avatarURL?, bio?, createdAt }
 DailyEntry { id, diaryText, selectedWinIds[], aiFeedback?, submissionCount, createdAt, updatedAt }
 ```
@@ -36,14 +30,9 @@ DailyEntry { id, diaryText, selectedWinIds[], aiFeedback?, submissionCount, crea
 - `firebase/storage.rules`
 - ルートの `firebase.json`（CLI が参照）
 
-### フォロー保存時のフィールド（Rules 整合）
+### 非対応コレクション
 
-`follows` コレクションの各ドキュメントには、少なくとも次を含めること（`firebase/firestore.rules` と一致）:
-
-| フィールド | 型 | 説明 |
-|------------|-----|------|
-| `fromUserId` | string | フォローする側の UID（`request.auth.uid` と一致） |
-| `toUserId` | string | フォローされる側の UID |
+- `posts/*` と `follows/*` は current rules で `read/write: false`（個人記録専用のため）
 
 ### 日次記録の制約（Rules 整合）
 
