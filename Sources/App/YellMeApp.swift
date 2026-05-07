@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseAuth
+import StoreKit
 
 @main
 struct YellMeApp: App {
@@ -25,6 +26,7 @@ class AppState: ObservableObject {
     @Published var billingMessage: String?
 
     private var authStateHandle: AuthStateDidChangeListenerHandle?
+    private var billingObserverTask: Task<Void, Never>?
     private let defaults = UserDefaults.standard
     private let subscriptionTierKey = "yellme.subscriptionTier"
 
@@ -48,15 +50,34 @@ class AppState: ObservableObject {
         PlanCatalog.features(for: subscriptionTier)
     }
 
-    func setSubscriptionTier(_ tier: SubscriptionTier) {
+    private func setSubscriptionTier(_ tier: SubscriptionTier) {
         subscriptionTier = tier
         defaults.set(tier.rawValue, forKey: subscriptionTierKey)
     }
+
+    #if DEBUG
+    func debugOverrideSubscriptionTier(_ tier: SubscriptionTier) {
+        setSubscriptionTier(tier)
+    }
+    #endif
 
     func refreshSubscriptionTier() async {
         let tier = await StoreKitService.shared.currentTier()
         if tier != subscriptionTier {
             setSubscriptionTier(tier)
+        }
+    }
+
+    func startBillingMonitoring() {
+        guard billingObserverTask == nil else { return }
+        billingObserverTask = Task { [weak self] in
+            for await _ in Transaction.updates {
+                guard let self else { return }
+                let tier = await StoreKitService.shared.currentTier()
+                await MainActor.run {
+                    self.setSubscriptionTier(tier)
+                }
+            }
         }
     }
 
@@ -98,6 +119,7 @@ class AppState: ObservableObject {
         if let handle = authStateHandle {
             Auth.auth().removeStateDidChangeListener(handle)
         }
+        billingObserverTask?.cancel()
     }
 }
 
@@ -129,6 +151,7 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.3), value: hasCompletedOnboarding)
         .task {
             await appState.refreshSubscriptionTier()
+            appState.startBillingMonitoring()
         }
     }
 }

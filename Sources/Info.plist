@@ -35,5 +35,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>YELLME_PREMIUM_PRODUCT_ID</key>
+	<string>com.takahiro.yellme.premium.monthly</string>
 </dict>
 </plist>

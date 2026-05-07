@@ -2,10 +2,13 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var appState: AppState
+    @AppStorage("yellme.lastNotifiedCompanionPhase") private var lastNotifiedCompanionPhaseRaw = CompanionPhase.egg.rawValue
     @ObservedObject private var store = DailyJournalStore.shared
     @StateObject private var viewModel = HomeViewModel()
     @State private var selectedCategory: WinCategory = .body
     @State private var showWelcomeBanner = false
+    @State private var showEvolutionAlert = false
+    @State private var evolvedPhase: CompanionPhase?
     private var dailyLimit: Int { appState.planFeatures.dailyJournalLimit }
     private var remainingToday: Int { store.remainingSubmissionsToday(limit: dailyLimit) }
 
@@ -45,6 +48,7 @@ struct HomeView: View {
                 Task {
                     await viewModel.hydrateFromFirestoreIfNeeded(store: store, appState: appState)
                 }
+                checkEvolutionIfNeeded(currentPhase: store.companion.phase)
                 if store.companion.showWelcomeBack {
                     showWelcomeBanner = true
                     store.consumeWelcomeBackFlag()
@@ -52,6 +56,16 @@ struct HomeView: View {
             }
             .onChange(of: store.entries) { _, _ in
                 viewModel.syncFromStore(store)
+            }
+            .onChange(of: store.companion.phase) { _, newValue in
+                checkEvolutionIfNeeded(currentPhase: newValue)
+            }
+            .alert("コンパニオンが進化しました", isPresented: $showEvolutionAlert) {
+                Button("うれしい") {}
+            } message: {
+                if let phase = evolvedPhase {
+                    Text("\(phase.title) に進化しました。\n\(phase.celebrationMessage)")
+                }
             }
         }
     }
@@ -396,6 +410,14 @@ struct HomeView: View {
             return "コンパニオン、\(phase.title)。おやすみ中で成長は一休み。段階の進み \(pct)パーセント"
         }
         return "コンパニオン、\(phase.title)。段階の進み \(pct)パーセント"
+    }
+
+    private func checkEvolutionIfNeeded(currentPhase: CompanionPhase) {
+        let last = CompanionPhase(rawValue: lastNotifiedCompanionPhaseRaw) ?? .egg
+        guard currentPhase.rank > last.rank else { return }
+        evolvedPhase = currentPhase
+        showEvolutionAlert = true
+        lastNotifiedCompanionPhaseRaw = currentPhase.rawValue
     }
 }
 

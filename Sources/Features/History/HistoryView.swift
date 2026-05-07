@@ -1,8 +1,12 @@
 import SwiftUI
+import UIKit
 
 struct HistoryView: View {
     @EnvironmentObject private var appState: AppState
     @ObservedObject private var store = DailyJournalStore.shared
+    @State private var exportText: String = ""
+    @State private var showExportSheet = false
+    @State private var exportNotice: String?
 
     private var grouped: [(month: String, entries: [DailyEntry])] {
         let withFeedback = store.entries.filter { $0.aiFeedback != nil }
@@ -46,7 +50,14 @@ struct HistoryView: View {
 
                 Section {
                     Button {
-                        // 月次ダウンロード実処理は次段で追加
+                        guard appState.planFeatures.canDownloadMonthlyReport else { return }
+                        if let report = buildMonthlyReport() {
+                            exportText = report
+                            showExportSheet = true
+                            exportNotice = nil
+                        } else {
+                            exportNotice = "ダウンロード可能な月次データがありません。"
+                        }
                     } label: {
                         Label(
                             appState.planFeatures.canDownloadMonthlyReport
@@ -56,6 +67,12 @@ struct HistoryView: View {
                         )
                     }
                     .disabled(!appState.planFeatures.canDownloadMonthlyReport)
+
+                    if let exportNotice {
+                        Text(exportNotice)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
                     NavigationLink {
                         ProfileView()
@@ -69,6 +86,9 @@ struct HistoryView: View {
             .navigationBarTitleDisplayMode(.large)
             .navigationDestination(for: DailyEntry.self) { entry in
                 DailyEntryDetailView(entry: entry)
+            }
+            .sheet(isPresented: $showExportSheet) {
+                ActivityView(activityItems: [exportText])
             }
         }
     }
@@ -88,6 +108,40 @@ struct HistoryView: View {
         guard let date = Calendar.current.date(from: comps) else { return yyyyMM }
         return date.formatted(.dateTime.year().month(.wide))
     }
+
+    private func buildMonthlyReport() -> String? {
+        guard let latestMonth = grouped.first else { return nil }
+        let entries = latestMonth.entries.sorted { $0.id < $1.id }
+        let monthTitle = sectionTitle(for: latestMonth.month)
+
+        var lines: [String] = []
+        lines.append("# YellMe 月次レポート")
+        lines.append("対象月: \(monthTitle)")
+        lines.append("出力日時: \(Date.now.formatted(date: .abbreviated, time: .shortened))")
+        lines.append("")
+
+        for entry in entries {
+            let labels = WinCatalog.labels(for: entry.selectedWinIds)
+            lines.append("## \(entry.id)")
+            let diary = entry.diaryText.trimmingCharacters(in: .whitespacesAndNewlines)
+            lines.append("日記: \(diary.isEmpty ? "（未入力）" : diary)")
+            lines.append("できたこと: \(labels.isEmpty ? "（なし）" : labels.joined(separator: "、"))")
+            lines.append("エール: \(entry.aiFeedback?.content ?? "（なし）")")
+            lines.append("")
+        }
+
+        return lines.joined(separator: "\n")
+    }
+}
+
+private struct ActivityView: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 private struct HistoryRowView: View {

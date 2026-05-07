@@ -157,6 +157,31 @@ enum CompanionPhase: String, Codable, CaseIterable, Equatable {
         }
     }
 
+    var rank: Int {
+        switch self {
+        case .egg: return 0
+        case .hatchling: return 1
+        case .young: return 2
+        case .grown: return 3
+        case .majestic: return 4
+        }
+    }
+
+    var celebrationMessage: String {
+        switch self {
+        case .egg:
+            return "小さな一歩の始まり。今日の記録がたまごを温めています。"
+        case .hatchling:
+            return "おめでとう。たまごがかえって、ひなが生まれました。"
+        case .young:
+            return "着実に育っています。あなたの継続がしっかり届いています。"
+        case .grown:
+            return "ここまで続けられたのは本当にすごい。頼もしい仲間に成長しました。"
+        case .majestic:
+            return "きらめき到達。あなたの積み重ねが、最高の姿になりました。"
+        }
+    }
+
     /// この段階に入るのに必要な累計 XP（下限）
     static func minimumXP(for phase: CompanionPhase) -> Int {
         switch phase {

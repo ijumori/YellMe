@@ -23,7 +23,12 @@ targets:
     bundleId: com.takahiro.yellme
     deploymentTarget: "17.0"
     sources:
-      - Sources
+      - path: Sources
+        excludes:
+          # テンプレはビルドに含めない（Secrets.swift と二重定義になるため）
+          - "**/Secrets.swift.example"
+          # エージェント用ドキュメント（複数あると CpResource で同名衝突する）
+          - "**/*.md"
     resources:
       - Resources
       - path: Resources/GoogleService-Info.plist
@@ -33,8 +38,6 @@ targets:
         product: FirebaseAuth
       - package: Firebase
         product: FirebaseFirestore
-      - package: Firebase
-        product: FirebaseStorage
     entitlements:
       path: YellMe.entitlements
       properties:
@@ -60,12 +63,14 @@ targets:
           - UIInterfaceOrientationPortrait
         NSCameraUsageDescription: プロフィール画像の設定に使用します
         NSPhotoLibraryUsageDescription: プロフィール画像の設定に使用します
+        YELLME_PREMIUM_PRODUCT_ID: com.takahiro.yellme.premium.monthly
 
   YellMeTests:
     type: bundle.unit-test
     platform: iOS
     bundleId: com.takahiro.yellme.tests
     sources:
-      - Tests
+      - path: Tests
+        optional: true
     dependencies:
       - target: YellMe

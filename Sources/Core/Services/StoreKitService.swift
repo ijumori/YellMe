@@ -3,11 +3,16 @@ import StoreKit
 
 actor StoreKitService {
     static let shared = StoreKitService()
+    private let premiumMonthlyProductID: String
 
-    // TODO: App Store Connect の実プロダクトIDに合わせる
-    private let premiumMonthlyProductID = "com.takahiro.yellme.premium.monthly"
+    init(bundle: Bundle = .main) {
+        premiumMonthlyProductID = bundle.object(forInfoDictionaryKey: "YELLME_PREMIUM_PRODUCT_ID") as? String ?? ""
+    }
 
     func fetchPremiumProduct() async throws -> Product {
+        guard !premiumMonthlyProductID.isEmpty else {
+            throw BillingError.missingProductConfiguration
+        }
         let products = try await Product.products(for: [premiumMonthlyProductID])
         guard let product = products.first else {
             throw BillingError.productNotFound
@@ -16,11 +21,13 @@ actor StoreKitService {
     }
 
     func currentTier() async -> SubscriptionTier {
+        guard !premiumMonthlyProductID.isEmpty else { return .free }
         for await result in Transaction.currentEntitlements {
             guard case .verified(let transaction) = result else { continue }
             if transaction.productID == premiumMonthlyProductID,
                transaction.revocationDate == nil,
-               !transaction.isUpgraded {
+               !transaction.isUpgraded,
+               isNotExpired(transaction) {
                 return .premium
             }
         }
@@ -49,12 +56,21 @@ actor StoreKitService {
     }
 
     func restorePurchases() async throws -> SubscriptionTier {
+        guard !premiumMonthlyProductID.isEmpty else {
+            throw BillingError.missingProductConfiguration
+        }
         try await AppStore.sync()
         return await currentTier()
+    }
+
+    private func isNotExpired(_ transaction: Transaction) -> Bool {
+        guard let expiration = transaction.expirationDate else { return true }
+        return expiration > Date()
     }
 }
 
 enum BillingError: LocalizedError {
+    case missingProductConfiguration
     case productNotFound
     case unverifiedTransaction
     case userCancelled
@@ -63,6 +79,8 @@ enum BillingError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
+        case .missingProductConfiguration:
+            return "課金商品の設定が未完了です。"
         case .productNotFound:
             return "購入商品が見つかりません。"
         case .unverifiedTransaction:

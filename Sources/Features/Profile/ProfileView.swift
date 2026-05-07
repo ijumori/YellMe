@@ -40,6 +40,7 @@ struct ProfileView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
 
+                    profileEditSection
                     avatarSection
                     subscriptionSection
 
@@ -50,6 +51,9 @@ struct ProfileView: View {
                 }
             }
             .navigationTitle("マイページ")
+            .task {
+                await viewModel.fetchData(appState: appState)
+            }
             #if DEBUG
             .alert("開発用", isPresented: $showKeychainDevAlert) {
                 Button("OK", role: .cancel) {}
@@ -69,7 +73,7 @@ struct ProfileView: View {
                 .foregroundStyle(.secondary)
             Picker("プラン", selection: Binding(
                 get: { appState.subscriptionTier },
-                set: { appState.setSubscriptionTier($0) }
+                set: { appState.debugOverrideSubscriptionTier($0) }
             )) {
                 Text("Free").tag(SubscriptionTier.free)
                 Text("Premium").tag(SubscriptionTier.premium)
@@ -116,6 +120,50 @@ struct ProfileView: View {
         .padding(.horizontal)
     }
     #endif
+
+    private var profileEditSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("プロフィール編集")
+                .font(.headline)
+
+            TextField("表示名", text: $viewModel.displayName)
+                .textInputAutocapitalization(.words)
+                .autocorrectionDisabled()
+                .textFieldStyle(.roundedBorder)
+
+            TextField("自己紹介（任意）", text: $viewModel.bio, axis: .vertical)
+                .lineLimit(3...5)
+                .textFieldStyle(.roundedBorder)
+
+            if let message = viewModel.message {
+                Text(message)
+                    .font(.caption)
+                    .foregroundStyle(viewModel.messageIsError ? .red : .secondary)
+            }
+
+            Button {
+                Task {
+                    await viewModel.saveProfile(appState: appState)
+                }
+            } label: {
+                HStack {
+                    if viewModel.isSaving {
+                        ProgressView()
+                    } else {
+                        Label("保存", systemImage: "square.and.arrow.down")
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(!viewModel.canSave || viewModel.isSaving)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(Color.secondary.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal)
+    }
 
     private var avatarSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -197,8 +245,85 @@ struct ProfileView: View {
 @MainActor
 class ProfileViewModel: ObservableObject {
     @Published var user: User?
+    @Published var displayName: String = ""
+    @Published var bio: String = ""
+    @Published var isSaving = false
+    @Published var message: String?
+    @Published var messageIsError = false
 
-    func fetchData() async {
-        // TODO: Firestore からフェッチ
+    var canSave: Bool {
+        let trimmed = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !trimmed.isEmpty && trimmed.count <= 30 && bio.count <= 160
+    }
+
+    func fetchData(appState: AppState) async {
+        message = nil
+        messageIsError = false
+
+        guard appState.isFirebaseConfigured, let uid = appState.authUser?.uid else {
+            // Firebase未設定のローカルモードでも編集欄は使えるように初期値を置く
+            if displayName.isEmpty {
+                displayName = "わたし"
+            }
+            return
+        }
+
+        do {
+            if let fetched = try await FirebaseService.shared.fetchUser(id: uid) {
+                user = fetched
+            } else {
+                user = User(id: uid, displayName: "わたし", bio: "", profileImageURL: nil, createdAt: .now)
+            }
+
+            if let current = user {
+                displayName = current.displayName
+                bio = current.bio
+            }
+        } catch {
+            message = "プロフィールの取得に失敗しました。"
+            messageIsError = true
+        }
+    }
+
+    func saveProfile(appState: AppState) async {
+        guard canSave else { return }
+
+        let trimmedName = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedBio = bio.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // ローカルモードは画面上だけの保存として扱う
+        guard appState.isFirebaseConfigured, let uid = appState.authUser?.uid else {
+            user = User(
+                id: user?.id ?? "local-user",
+                displayName: trimmedName,
+                bio: trimmedBio,
+                profileImageURL: user?.profileImageURL,
+                createdAt: user?.createdAt ?? .now
+            )
+            message = "保存しました（ローカルモード）"
+            messageIsError = false
+            return
+        }
+
+        isSaving = true
+        message = nil
+        defer { isSaving = false }
+
+        do {
+            let newUser = User(
+                id: uid,
+                displayName: trimmedName,
+                bio: trimmedBio,
+                profileImageURL: user?.profileImageURL,
+                createdAt: user?.createdAt ?? .now
+            )
+            try await FirebaseService.shared.saveUser(newUser)
+            user = newUser
+            message = "保存しました。"
+            messageIsError = false
+        } catch {
+            message = "保存に失敗しました。時間をおいて再試行してください。"
+            messageIsError = true
+        }
     }
 }
