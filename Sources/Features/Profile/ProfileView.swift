@@ -197,7 +197,6 @@ struct ProfileView: View {
 @MainActor
 class ProfileViewModel: ObservableObject {
     @Published var user: User?
-    @Published var posts: [Post] = []
 
     func fetchData() async {
         // TODO: Firestore からフェッチ

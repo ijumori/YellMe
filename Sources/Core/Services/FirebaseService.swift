@@ -6,37 +6,6 @@ actor FirebaseService {
     static let shared = FirebaseService()
     private let db = Firestore.firestore()
 
-    // MARK: - 投稿
-
-    func fetchPosts() async throws -> [Post] {
-        let snapshot = try await db.collection("posts")
-            .order(by: "createdAt", descending: true)
-            .limit(to: 50)
-            .getDocuments()
-
-        return try snapshot.documents.compactMap { doc in
-            try doc.data(as: PostDTO.self).toPost()
-        }
-    }
-
-    func savePost(_ post: Post) async throws {
-        try ensureCurrentUserMatches(post.userId)
-        let dto = PostDTO(from: post)
-        try db.collection("posts").document(post.id).setData(from: dto)
-    }
-
-    // MARK: - リアクション
-
-    func addReaction(_ reaction: Reaction, to postId: String) async throws {
-        try ensureCurrentUserMatches(reaction.userId)
-        let dto = ReactionDTO(from: reaction)
-        try db.collection("posts")
-            .document(postId)
-            .collection("reactions")
-            .document(reaction.id)
-            .setData(from: dto)
-    }
-
     // MARK: - ユーザー
 
     func fetchUser(id: String) async throws -> User? {
@@ -112,52 +81,6 @@ enum FirebaseServiceError: LocalizedError {
 }
 
 // MARK: - DTOs（Firestore用の変換層）
-
-struct PostDTO: Codable {
-    let id: String
-    let userId: String
-    let content: String
-    let createdAt: Date
-    let aiFeedbackMode: String?
-    let aiFeedbackContent: String?
-    let aiFeedbackCreatedAt: Date?
-
-    init(from post: Post) {
-        self.id = post.id
-        self.userId = post.userId
-        self.content = post.content
-        self.createdAt = post.createdAt
-        self.aiFeedbackMode = post.aiFeedback?.mode.rawValue
-        self.aiFeedbackContent = post.aiFeedback?.content
-        self.aiFeedbackCreatedAt = post.aiFeedback?.createdAt
-    }
-
-    func toPost() -> Post {
-        var feedback: AIFeedback?
-        if let modeRaw = aiFeedbackMode,
-           let mode = FeedbackMode(rawValue: modeRaw),
-           let content = aiFeedbackContent,
-           let createdAt = aiFeedbackCreatedAt {
-            feedback = AIFeedback(mode: mode, content: content, createdAt: createdAt)
-        }
-        return Post(id: id, userId: userId, content: content,
-                    createdAt: createdAt, aiFeedback: feedback)
-    }
-}
-
-struct ReactionDTO: Codable {
-    let id: String
-    let userId: String
-    let type: String
-    let createdAt: Date
-
-    init(from reaction: Reaction) {
-        self.id = reaction.id
-        self.userId = reaction.userId
-        self.type = reaction.type.rawValue
-        self.createdAt = reaction.createdAt
-    }
-}
 
 struct UserDTO: Codable {
     let id: String

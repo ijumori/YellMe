@@ -1,0 +1,32 @@
+import Foundation
+
+struct AIFeedback: Codable, Equatable, Hashable {
+    let mode: FeedbackMode
+    let content: String
+    let createdAt: Date
+}
+
+enum FeedbackMode: String, Codable, CaseIterable {
+    case praise = "praise"       // 褒めモード
+    case empathy = "empathy"     // 共感モード
+    case advice = "advice"       // アドバイスモード
+    case courage = "courage"     // 勇気モード
+
+    var label: String {
+        switch self {
+        case .praise:  return "褒めて"
+        case .empathy: return "共感して"
+        case .advice:  return "アドバイスして"
+        case .courage: return "勇気をくれ"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .praise:  return "star.fill"
+        case .empathy: return "heart.fill"
+        case .advice:  return "lightbulb.fill"
+        case .courage: return "bolt.fill"
+        }
+    }
+}
