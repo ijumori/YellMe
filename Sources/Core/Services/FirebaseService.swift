@@ -20,6 +20,7 @@ actor FirebaseService {
     }
 
     func savePost(_ post: Post) async throws {
+        try ensureCurrentUserMatches(post.userId)
         let dto = PostDTO(from: post)
         try db.collection("posts").document(post.id).setData(from: dto)
     }
@@ -27,6 +28,7 @@ actor FirebaseService {
     // MARK: - リアクション
 
     func addReaction(_ reaction: Reaction, to postId: String) async throws {
+        try ensureCurrentUserMatches(reaction.userId)
         let dto = ReactionDTO(from: reaction)
         try db.collection("posts")
             .document(postId)
@@ -50,6 +52,7 @@ actor FirebaseService {
     // MARK: - 日次記録
 
     func saveDailyEntry(_ entry: DailyEntry, userId: String) async throws {
+        try ensureCurrentUserMatches(userId)
         let dto = DailyEntryDTO(from: entry)
         try db.collection("users")
             .document(userId)
@@ -59,6 +62,7 @@ actor FirebaseService {
     }
 
     func fetchDailyEntry(userId: String, calendarDay: String) async throws -> DailyEntry? {
+        try ensureCurrentUserMatches(userId)
         let doc = try await db.collection("users")
             .document(userId)
             .collection("dailyEntries")
@@ -69,6 +73,7 @@ actor FirebaseService {
     }
 
     func fetchRecentDailyEntries(userId: String, limit: Int = 14) async throws -> [DailyEntry] {
+        try ensureCurrentUserMatches(userId)
         let snapshot = try await db.collection("users")
             .document(userId)
             .collection("dailyEntries")
@@ -77,6 +82,31 @@ actor FirebaseService {
             .getDocuments()
         return try snapshot.documents.compactMap { doc in
             try doc.data(as: DailyEntryDTO.self).toDailyEntry()
+        }
+    }
+
+    // MARK: - Security
+
+    private func ensureCurrentUserMatches(_ userId: String) throws {
+        guard let currentUid = Auth.auth().currentUser?.uid else {
+            throw FirebaseServiceError.notAuthenticated
+        }
+        guard currentUid == userId else {
+            throw FirebaseServiceError.userMismatch
+        }
+    }
+}
+
+enum FirebaseServiceError: LocalizedError {
+    case notAuthenticated
+    case userMismatch
+
+    var errorDescription: String? {
+        switch self {
+        case .notAuthenticated:
+            return "ログイン状態が確認できません。"
+        case .userMismatch:
+            return "ユーザー情報が一致しないため保存できません。"
         }
     }
 }

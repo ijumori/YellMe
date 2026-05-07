@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isString(field) {
+      return field is string && field.size() > 0;
+    }
+
+    // ユーザープロフィール（ドキュメント ID = Firebase Auth UID）
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create: if isOwner(userId);
+      allow update, delete: if isOwner(userId);
+
+      // 日次記録（本人のみ）
+      match /dailyEntries/{calendarDay} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && isString(request.resource.data.id)
+          && request.resource.data.id == calendarDay
+          && request.resource.data.selectedWinIds is list
+          && request.resource.data.submissionCount is int
+          && request.resource.data.submissionCount >= 0;
+        allow update: if isOwner(userId)
+          && request.resource.data.id == resource.data.id
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.submissionCount is int
+          && request.resource.data.submissionCount >= resource.data.submissionCount;
+        allow delete: if false;
+      }
+    }
+
+    // 投稿（作成者のみ更新・削除。userId のすり替え禁止）
+    match /posts/{postId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && isString(request.resource.data.userId)
+        && isString(request.resource.data.content);
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if signedIn()
+        && resource.data.userId == request.auth.uid;
+
+      match /reactions/{reactionId} {
+        allow read: if signedIn();
+        allow create: if signedIn()
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.id == reactionId
+          && request.resource.data.type in ["heart", "understood", "goodJob"];
+        allow update, delete: if signedIn()
+          && resource.data.userId == request.auth.uid;
+      }
+    }
+
+    // フォロー（fromUserId / toUserId をデータに含める実装を想定）
+    match /follows/{docId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.fromUserId == request.auth.uid;
+      allow delete: if signedIn()
+        && resource.data.fromUserId == request.auth.uid;
+      allow update: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
