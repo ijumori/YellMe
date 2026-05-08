@@ -1,21 +1,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var appState: AppState
+
     var body: some View {
         TabView {
-            TimelineView()
+            HomeView()
                 .tabItem {
-                    Label("タイムライン", systemImage: "heart.fill")
+                    Label("いま", systemImage: "sun.max.fill")
                 }
 
-            PostView()
+            HistoryView()
                 .tabItem {
-                    Label("書く", systemImage: "pencil.and.scribble")
-                }
-
-            ProfileView()
-                .tabItem {
-                    Label("マイページ", systemImage: "person.fill")
+                    Label("きろく", systemImage: "calendar")
                 }
         }
         .tint(.pink)
@@ -24,4 +21,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(AppState())
 }

@@ -231,7 +231,27 @@ struct HomeView: View {
                 .background(Color.secondary.opacity(0.08))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .accessibilityLabel(Text("今日の日記"))
+
+            if viewModel.diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                starterPrompts
+            }
         }
+    }
+
+    private var starterPrompts: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("書き出しのヒント")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            WrapHStack(items: HomeViewModel.diaryStarterPrompts) { prompt in
+                Button(prompt) {
+                    viewModel.diaryText = prompt + "\n"
+                }
+                .font(.caption)
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding(.top, 4)
     }
 
     private var winsSection: some View {
@@ -479,6 +499,11 @@ final class HomeViewModel: ObservableObject {
     private static let minDiaryChars = 20
     private static let baseXP = 1
     private static let bonusXP = 1
+    static let diaryStarterPrompts: [String] = [
+        "今日いちばんホッとしたことは、",
+        "少しでも前に進めたことは、",
+        "今の気持ちを一言で言うと、",
+    ]
 
     @Published var diaryText = ""
     @Published var selectedWinIds: Set<String> = []

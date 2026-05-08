@@ -9,11 +9,13 @@ actor FirebaseService {
     // MARK: - ユーザー
 
     func fetchUser(id: String) async throws -> User? {
+        try ensureCurrentUserMatches(id)
         let doc = try await db.collection("users").document(id).getDocument()
         return try doc.data(as: UserDTO.self).toUser()
     }
 
     func saveUser(_ user: User) async throws {
+        try ensureCurrentUserMatches(user.id)
         let dto = UserDTO(from: user)
         try db.collection("users").document(user.id).setData(from: dto)
     }

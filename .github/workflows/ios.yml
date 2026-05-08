@@ -1,0 +1,40 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Bootstrap Secrets.swift
+        run: ./scripts/bootstrap-secrets.sh
+
+      - name: Optional Claude API key (repository secret)
+        env:
+          YELLME_CLAUDE_API_KEY: ${{ secrets.YELLME_CLAUDE_API_KEY }}
+        run: ./scripts/write-secrets-from-env.sh
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build (Simulator)
+        run: |
+          xcodebuild \
+            -project YellMe.xcodeproj \
+            -scheme YellMe \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            build

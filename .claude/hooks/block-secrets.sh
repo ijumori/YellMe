@@ -24,6 +24,10 @@ BLOCKED=(
 
 for pattern in "${BLOCKED[@]}"; do
   if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    # テンプレートは編集・レビュー用に許可（実キーを置かないこと）
+    if [[ "$FILE_PATH" == *"Secrets.swift.example"* ]]; then
+      continue
+    fi
     echo "🚫 BLOCKED: ${FILE_PATH} はシークレットファイルです。直接編集禁止。" >&2
     echo "  → Secrets.swift は手動で編集してください。" >&2
     exit 2

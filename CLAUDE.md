@@ -1,6 +1,6 @@
 # エールミー (YellMe) — Claude Code 開発ガイド
 
-日記を書くとAI（Claude）が褒めフィードバックをくれるiOS SNSアプリ。批判ゼロ・共感100%の「やさしい世界」。
+日記と「今日できたこと」で記録し、コンパニオンが成長する。AI（Claude）が褒めフィードバックをくれる iOS アプリ。批判ゼロ・共感100%の「やさしい世界」。
 
 | 項目 | 内容 |
 |------|------|
@@ -39,11 +39,13 @@ open YellMe.xcodeproj
 Sources/
 ├── App/          YellMeApp.swift（Firebase初期化） / ContentView.swift（TabView）
 ├── Core/
-│   ├── Models/   Post.swift / User.swift / MockData.swift
-│   └── Services/ ClaudeService.swift / FirebaseService.swift / Secrets.swift【gitignore】
+│   ├── Models/   Post.swift / User.swift / MockData.swift / DailyJournalModels.swift
+│   └── Services/ ClaudeService.swift / FirebaseService.swift / DailyJournalStore.swift / Secrets.swift【gitignore】
 └── Features/
-    ├── Timeline/ TimelineView.swift / PostCardView.swift
-    ├── Post/     PostView.swift
+    ├── Home/     HomeView.swift（いまタブ）
+    ├── History/  HistoryView.swift / DailyEntryDetailView.swift（きろくタブ）
+    ├── Timeline/ TimelineView.swift（未使用・参照用）
+    ├── Post/     PostView.swift（共有 UI 部品・プレビュー用）
     └── Profile/  ProfileView.swift
 ```
 
@@ -58,7 +60,7 @@ Sources/
 ### APIキー・機密情報（Hook強制）
 - `Secrets.swift` / `GoogleService-Info.plist` はHookでWrite/Edit自動ブロック済み
 - 手動で編集すること。絶対コミットしない
-- `Secrets.claudeAPIKey == "YOUR_CLAUDE_API_KEY_HERE"` のとき自動モック動作
+- `ClaudeAPIKeyPolicy.shouldUseMockAPI(for: ClaudeAPIKeyStore.resolvedKey())` が true のとき自動モック動作（Keychain 優先）
 
 ### View設計
 - 1画面1ファイル: `Features/{Name}/{Name}View.swift`

@@ -244,8 +244,12 @@ struct ProfileView: View {
             .disabled(appState.isBillingBusy)
 
             HStack(spacing: 16) {
-                Link("プライバシーポリシー", destination: URL(string: "https://ijumori.github.io/YellMe/privacy.html")!)
-                Link("利用規約", destination: URL(string: "https://ijumori.github.io/YellMe/terms.html")!)
+                if let privacyURL = URL(string: "https://ijumori.github.io/YellMe/privacy.html") {
+                    Link("プライバシーポリシー", destination: privacyURL)
+                }
+                if let termsURL = URL(string: "https://ijumori.github.io/YellMe/terms.html") {
+                    Link("利用規約", destination: termsURL)
+                }
             }
             .font(.caption)
             .foregroundStyle(.pink)

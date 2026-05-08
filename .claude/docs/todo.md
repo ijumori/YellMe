@@ -17,5 +17,14 @@
 - [x] プレミアム機能ロック（着せ替え/月次DL）
 - [ ] StoreKit本番化（商品ID確定・検証強化）
 
-詳細: `.company/product/specs/yellme-features.md`
-実装手順: `.company/engineering/docs/yellme-architecture.md`
+## App Store 審査対応
+- [x] プライバシーポリシー・サポートページ公開（GitHub Pages）
+- [x] 利用規約（EULA）ページ作成・公開
+- [x] サブスク詳細・法的リンクをアプリ内に追加（ProfileView）
+- [x] App Store 説明文にサブスク自動更新条件追記
+- [x] iPad クラッシュ対応（TARGETED_DEVICE_FAMILY=1、iPhone専用化）
+- [x] Apple Distribution 証明書作成・Build 4 アップロード
+- [ ] App Store Connect で EULA URL 設定（手動）
+- [ ] 有料アプリ利用規約 (Paid Apps) Active 確認（手動）
+- [ ] 輸出コンプライアンス回答（手動）
+- [ ] 審査に再提出（手動）

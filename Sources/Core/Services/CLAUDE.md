@@ -4,10 +4,10 @@
 - 全Serviceは `actor` として定義（Swift Concurrency安全）
 - 外部から呼ぶときは `await service.method()`
 
-## Secrets.swift
-- このファイルはHookでWrite/Edit自動ブロック済み
-- 手動編集のみ許可。APIキーは絶対コミットしない
-- モック動作条件: `claudeAPIKey == "YOUR_CLAUDE_API_KEY_HERE"`
+## Secrets.swift / Keychain
+- `Secrets.swift` はHookでWrite/Edit自動ブロック済み（手動編集のみ）
+- 実行時のキー解決: `ClaudeAPIKeyStore.resolvedKey()`（Keychain 優先 → `Secrets.claudeAPIKey`）
+- モック条件: `ClaudeAPIKeyPolicy.shouldUseMockAPI(for: ClaudeAPIKeyStore.resolvedKey())`
 
 ## FirebaseService
 - FirestoreのCRUDは必ずDTO（`*DTO` struct）経由

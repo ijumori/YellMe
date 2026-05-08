@@ -32,6 +32,10 @@ struct AuthView: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
+
+                    Text("最短30秒で、今日の記録が残せます")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()

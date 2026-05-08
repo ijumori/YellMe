@@ -23,10 +23,19 @@ xcuserdata/
 # API Keys（絶対にコミットしない）
 Secrets.swift
 *.env
+.env.*
 Config/Secrets.plist
+
+# App Store Connect / 署名
+AuthKey_*.p8
+*.p12
+*.mobileprovision
 
 # Firebase
 GoogleService-Info.plist
 
 # Claude Code（個人設定）
 .claude/settings.local.json
+
+# 不要ファイル退避
+DELETEBOX/
