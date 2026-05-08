@@ -28,6 +28,7 @@
 		B480107A721362883C50B8C3 /* SubscriptionPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = E457000C2B7E480D511C87F5 /* SubscriptionPlan.swift */; };
 		B667DBACE44BEC688D2268E5 /* DailyJournalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5085EA5101E075126D1308 /* DailyJournalModels.swift */; };
 		CD457B404000616D58E16301 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9673DB0DC5327B2B0A13ED9E /* ClaudeService.swift */; };
+		CDF697BDB8E88106E652AA87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DCED52DA775A3296595B175 /* Assets.xcassets */; };
 		DD23BCB489741FB2CCB74917 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF36484C92F998EAAAFE2B39 /* HomeView.swift */; };
 		DEE094F79896D8D376279F4F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B420EFECB63314C20D8731DC /* ContentView.swift */; };
 		E287168C59D54BCAFD190D42 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29A6D6099B837804BC0CE0 /* OnboardingView.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		019C84D48F4FC616F5AF2ADB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		0DCED52DA775A3296595B175 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1312DF664D9B76E05D3DA45F /* YellMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YellMeApp.swift; sourceTree = "<group>"; };
 		16646A1023122EBC706EABC7 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		2B5085EA5101E075126D1308 /* DailyJournalModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyJournalModels.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 		71E756A214FC409E18298F41 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				0DCED52DA775A3296595B175 /* Assets.xcassets */,
 				7441D108B4CF8703A306A822 /* Info.plist */,
 				5B6B419E189F110853A46FFC /* App */,
 				F2A9F727F2A77E6B87D66FA2 /* Core */,
@@ -230,6 +233,7 @@
 			buildConfigurationList = E099426A137ACAB0F5DFBD5A /* Build configuration list for PBXNativeTarget "YellMe" */;
 			buildPhases = (
 				B77F0387F49FBF1FF4AF0D56 /* Sources */,
+				4C6C9F2F5A7F0A8EF61DA747 /* Resources */,
 				E34F3AA4CE2A38F912D5E02A /* Frameworks */,
 			);
 			buildRules = (
@@ -273,7 +277,7 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					CB9570B05A2A36EC12CD8F61 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = NXFZ5AUX62;
 					};
 				};
 			};
@@ -299,6 +303,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4C6C9F2F5A7F0A8EF61DA747 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDF697BDB8E88106E652AA87 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6E85A53C6D5395251402C3D5 /* Sources */ = {
@@ -478,17 +493,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = YellMe.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = NXFZ5AUX62;
 				INFOPLIST_FILE = Sources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.YellMe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.yellme;
 				PRODUCT_NAME = YellMe;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -498,17 +513,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = YellMe.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = NXFZ5AUX62;
 				INFOPLIST_FILE = Sources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.YellMe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.yellme;
 				PRODUCT_NAME = YellMe;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

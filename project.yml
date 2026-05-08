@@ -30,7 +30,6 @@ targets:
           # エージェント用ドキュメント（複数あると CpResource で同名衝突する）
           - "**/*.md"
     resources:
-      - Resources
       - path: Resources/GoogleService-Info.plist
         optional: true
     dependencies:
@@ -46,9 +45,11 @@ targets:
     settings:
       base:
         PRODUCT_NAME: YellMe
+        PRODUCT_BUNDLE_IDENTIFIER: com.takahiro.yellme
         INFOPLIST_FILE: Sources/Info.plist
-        DEVELOPMENT_TEAM: ""
+        DEVELOPMENT_TEAM: NXFZ5AUX62
         CODE_SIGN_ENTITLEMENTS: YellMe.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
     info:
       path: Sources/Info.plist
       properties:
@@ -59,8 +60,12 @@ targets:
         LSRequiresIPhoneOS: true
         UILaunchScreen:
           UIColorName: AccentColor
+        CFBundleIconName: AppIcon
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         NSCameraUsageDescription: プロフィール画像の設定に使用します
         NSPhotoLibraryUsageDescription: プロフィール画像の設定に使用します
         YELLME_PREMIUM_PRODUCT_ID: com.takahiro.yellme.premium.monthly

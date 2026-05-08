@@ -215,6 +215,15 @@ struct ProfileView: View {
             }
 
             if appState.subscriptionTier != .premium {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("エールミー Premium（月額）")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Text("1か月ごとの自動更新サブスクリプションです。期間終了の24時間前までにキャンセルしない限り自動更新されます。")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+
                 Button {
                     Task { await appState.purchasePremium() }
                 } label: {
@@ -233,6 +242,13 @@ struct ProfileView: View {
             }
             .buttonStyle(.bordered)
             .disabled(appState.isBillingBusy)
+
+            HStack(spacing: 16) {
+                Link("プライバシーポリシー", destination: URL(string: "https://ijumori.github.io/YellMe/privacy.html")!)
+                Link("利用規約", destination: URL(string: "https://ijumori.github.io/YellMe/terms.html")!)
+            }
+            .font(.caption)
+            .foregroundStyle(.pink)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
