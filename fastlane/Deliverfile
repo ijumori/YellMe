@@ -1,0 +1,6 @@
+app_identifier("com.takahiro.yellme")
+username("ijumorimori@gmail.com")
+primary_category("LIFESTYLE")
+submit_for_review(false)
+automatic_release(false)
+force(true)
