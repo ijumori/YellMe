@@ -9,7 +9,7 @@ settings:
   base:
     SWIFT_VERSION: 5.9
     MARKETING_VERSION: 1.0.0
-    CURRENT_PROJECT_VERSION: 2
+    CURRENT_PROJECT_VERSION: 4
 
 packages:
   Firebase:
@@ -56,7 +56,7 @@ targets:
         CFBundleDisplayName: エールミー
         CFBundleName: YellMe
         CFBundleShortVersionString: "1.0.0"
-        CFBundleVersion: "2"
+        CFBundleVersion: "4"
         LSRequiresIPhoneOS: true
         UILaunchScreen:
           UIColorName: AccentColor
