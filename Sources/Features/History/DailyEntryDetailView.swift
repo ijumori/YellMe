@@ -45,6 +45,10 @@ struct DailyEntryDetailView: View {
             }
             .padding()
         }
+        .scrollDismissesKeyboard(.interactively)
+        .background {
+            InteractivePopGestureEnabler()
+        }
         .navigationTitle("その日の記録")
         .navigationBarTitleDisplayMode(.inline)
     }

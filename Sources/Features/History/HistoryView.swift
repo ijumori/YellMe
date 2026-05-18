@@ -2,6 +2,8 @@ import SwiftUI
 import UIKit
 
 struct HistoryView: View {
+    var onOpenProfile: () -> Void = {}
+
     @EnvironmentObject private var appState: AppState
     @ObservedObject private var store = DailyJournalStore.shared
     @State private var exportText: String = ""
@@ -74,12 +76,13 @@ struct HistoryView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    NavigationLink {
-                        ProfileView()
+                    Button {
+                        onOpenProfile()
                     } label: {
-                        Label("マイページ・設定", systemImage: "person.circle")
+                        Label("マイページ（プラン・設定）", systemImage: "person.circle")
                     }
-                    .accessibilityLabel(Text("マイページと設定"))
+                    .accessibilityIdentifier("history_open_profile")
+                    .accessibilityLabel(Text("マイページ。プランと設定"))
                 }
             }
             .navigationTitle("きろく")
@@ -166,6 +169,7 @@ private struct HistoryRowView: View {
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(dayLabel)、\(diarySnippet)"))
+        .accessibilityIdentifier("history_entry_\(entry.id)")
     }
 
     private var dayLabel: String {

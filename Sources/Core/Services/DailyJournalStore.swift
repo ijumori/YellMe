@@ -14,7 +14,11 @@ final class DailyJournalStore: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        load()
+        if UITestingSupport.isEnabled {
+            resetForUITesting()
+        } else {
+            load()
+        }
     }
 
     func load() {
@@ -196,5 +200,12 @@ final class DailyJournalStore: ObservableObject {
         f.timeZone = TimeZone.current
         f.dateFormat = "yyyy-MM-dd"
         return f.date(from: day)
+    }
+
+    func resetForUITesting() {
+        defaults.removeObject(forKey: entriesKey)
+        defaults.removeObject(forKey: companionKey)
+        entries = []
+        companion = .initial
     }
 }

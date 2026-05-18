@@ -5,6 +5,7 @@ struct HomeView: View {
     @AppStorage("yellme.lastNotifiedCompanionPhase") private var lastNotifiedCompanionPhaseRaw = CompanionPhase.egg.rawValue
     @ObservedObject private var store = DailyJournalStore.shared
     @StateObject private var viewModel = HomeViewModel()
+    @FocusState private var diaryEditorFocused: Bool
     @State private var selectedCategory: WinCategory = .body
     @State private var showWelcomeBanner = false
     @State private var showEvolutionAlert = false
@@ -18,6 +19,8 @@ struct HomeView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         headerSection
+
+                        planHintBanner
 
                         companionCard
 
@@ -40,9 +43,18 @@ struct HomeView: View {
                     }
                     .padding()
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle("いま")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("完了") {
+                        diaryEditorFocused = false
+                    }
+                }
+            }
             .onAppear {
                 viewModel.syncFromStore(store)
                 Task {
@@ -71,6 +83,29 @@ struct HomeView: View {
     }
 
     // MARK: - Sections
+
+    /// 審査員・新規ユーザーが Premium 導線に辿り着けるよう案内（実体は「マイページ」タブのプラン欄）。
+    private var planHintBanner: some View {
+        Group {
+            if appState.subscriptionTier != .premium {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "crown.fill")
+                        .foregroundStyle(.pink)
+                        .accessibilityHidden(true)
+                    Text("Premium（月額）の購入・復元は、下の「マイページ」タブの「プラン」から行えます。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.pink.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text("Premium月額の購入と復元はマイページタブのプランから行えます"))
+            }
+        }
+    }
 
     private var headerSection: some View {
         HStack {
@@ -130,11 +165,7 @@ struct HomeView: View {
                             .frame(width: 120, height: 120)
                             .opacity(resting ? 0.35 : 1)
 
-                        Image(systemName: phase.systemImage)
-                            .font(.system(size: 48))
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.pink)
-                            .opacity(resting ? 0.45 : 1)
+                        CompanionGlyphView(phase: phase, resting: resting)
                             .accessibilityHidden(true)
                     }
                     .accessibilityElement(children: .combine)
@@ -226,11 +257,13 @@ struct HomeView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             TextEditor(text: $viewModel.diaryText)
+                .focused($diaryEditorFocused)
                 .frame(minHeight: 140)
                 .padding(12)
                 .background(Color.secondary.opacity(0.08))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .accessibilityLabel(Text("今日の日記"))
+                .accessibilityIdentifier("home_diary_editor")
 
             if viewModel.diaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 starterPrompts
@@ -378,6 +411,7 @@ struct HomeView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .disabled(!viewModel.canSubmit(remainingLimit: remainingToday) || viewModel.isLoading)
+            .accessibilityIdentifier("home_submit_button")
             .accessibilityHint(Text(viewModel.canSubmit(remainingLimit: remainingToday) ? "日記と今日できたことを保存し、エールを表示します" : "日記を20文字以上書くか、今日の残り回数を確認してください"))
 
             if !viewModel.canSubmit(remainingLimit: remainingToday) {
@@ -438,6 +472,69 @@ struct HomeView: View {
         evolvedPhase = currentPhase
         showEvolutionAlert = true
         lastNotifiedCompanionPhaseRaw = currentPhase.rawValue
+    }
+}
+
+// MARK: - Companion glyph（たまご段階のみカスタム描画）
+
+private struct CompanionGlyphView: View {
+    let phase: CompanionPhase
+    let resting: Bool
+
+    var body: some View {
+        Group {
+            if phase == .egg {
+                CompanionEggGlyph()
+                    .frame(width: 52, height: 72)
+            } else {
+                Image(systemName: phase.systemImage)
+                    .font(.system(size: 48))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.pink)
+            }
+        }
+        .opacity(resting ? 0.45 : 1)
+    }
+}
+
+private struct CompanionEggGlyph: View {
+    var body: some View {
+        ZStack {
+            Ellipse()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(red: 1, green: 0.97, blue: 0.94),
+                            Color(red: 0.99, green: 0.88, blue: 0.90),
+                            Color(red: 0.95, green: 0.76, blue: 0.84)
+                        ],
+                        startPoint: UnitPoint(x: 0.35, y: 0),
+                        endPoint: UnitPoint(x: 0.45, y: 1)
+                    )
+                )
+            Ellipse()
+                .stroke(
+                    LinearGradient(
+                        colors: [Color.pink.opacity(0.4), Color.pink.opacity(0.15)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 2
+                )
+            Ellipse()
+                .fill(.white.opacity(0.5))
+                .frame(width: 22, height: 11)
+                .offset(x: -9, y: -19)
+                .blur(radius: 1)
+            Circle()
+                .fill(Color.pink.opacity(0.2))
+                .frame(width: 7, height: 7)
+                .offset(x: 11, y: 10)
+            Circle()
+                .fill(Color.pink.opacity(0.14))
+                .frame(width: 4, height: 4)
+                .offset(x: -7, y: 16)
+        }
     }
 }
 
@@ -551,7 +648,7 @@ final class HomeViewModel: ObservableObject {
 
         let diaryTrimmed = diaryText.trimmingCharacters(in: .whitespacesAndNewlines)
         let winArray = Array(selectedWinIds).sorted()
-        let userMessage = Self.buildUserMessage(diary: diaryText, winIds: winArray)
+        let userMessage = Self.buildUserMessage(diary: diaryText, winIds: winArray, mode: selectedMode)
 
         do {
             let apiKey = ClaudeAPIKeyStore.resolvedKey()
@@ -623,11 +720,10 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    private static func buildUserMessage(diary: String, winIds: [String]) -> String {
+    private static func buildUserMessage(diary: String, winIds: [String], mode: FeedbackMode) -> String {
+        let trimmed = diary.trimmingCharacters(in: .whitespacesAndNewlines)
         let labels = WinCatalog.labels(for: winIds)
-        let diaryBlock = diary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            ? "（未入力）"
-            : diary
+        let diaryBlock = trimmed.isEmpty ? "（未入力）" : diary
         let winsBlock: String
         if labels.isEmpty {
             winsBlock = "（なし）"
@@ -635,6 +731,13 @@ final class HomeViewModel: ObservableObject {
             winsBlock = labels.map { "- \($0)" }.joined(separator: "\n")
         }
         return """
+        【希望するエールのスタイル】
+        \(mode.label)
+
+        【メタ情報】
+        日記の文字数（前後の空白・改行を除く）: \(trimmed.count)
+        「今日できたこと」の選択数: \(winIds.count)
+
         【日記】
         \(diaryBlock)
 
@@ -646,4 +749,5 @@ final class HomeViewModel: ObservableObject {
 
 #Preview {
     HomeView()
+        .environmentObject(AppState())
 }

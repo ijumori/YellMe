@@ -5,47 +5,41 @@
 UIは温かく、柔らかく、ユーザーが安心して日記を書ける雰囲気を作る。
 
 ## デザイン原則
-- **温かみ**: ハードエッジより丸みを使う（`cornerRadius: 16` 以上）
-- **余白**: コンテンツを詰め込まない。`.padding()` を惜しまない
-- **フィードバック**: 操作に対して必ず視覚的な反応を返す
-- **アニメーション**: 意味のある動きだけ。装飾的なアニメーションは避ける
-
-## カラー方針
-- システムカラー（`.systemBackground`, `.label`）を基本とし、ダークモードを自動対応
-- アクセントカラーはAssets.xcassetsで管理（ハードコード禁止）
+- **温かみ**: ハードエッジより丸み（`cornerRadius: 12`〜`16`）
+- **余白**: コンテンツを詰め込まない
+- **フィードバック**: 操作に視覚的な反応（`.animation(value:)` は `Equatable` 必須）
+- **アクセント**: タブ・主要 CTA はピンク系（`ContentView` の `.tint(.pink)`）
 
 ## SwiftUI 実装規則
+
 ```swift
-// ✅ .task を優先（キャンセル自動処理）
-.task { await viewModel.load() }
+.task { await viewModel.hydrateFromFirestoreIfNeeded(...) }
 
-// ✅ animation は value ベース（Equatable 必須）
-.animation(.spring(), value: isExpanded)
+.animation(.spring(), value: viewModel.feedback)
 
-// ✅ 画面遷移は NavigationStack
-NavigationStack {
-    // ...
-    .navigationDestination(for: Post.self) { post in
-        PostDetailView(post: post)
-    }
-}
+NavigationStack { /* Home / History / Detail */ }
 ```
 
-## フィードバックバブル（PostCardView）
-- モード別カラー:
-  - `.praise` → 暖色（オレンジ/イエロー系）
-  - `.empathy` → 寒色（ブルー/パープル系）
-  - `.advice` → グリーン系
-  - `.courage` → ピンク/レッド系
-- バブルの出現は `.transition(.scale.combined(with: .opacity))` で
+## エール表示（Home）
+- モード別 UI: `FeedbackComponents.swift` の `FeedbackModeButton`
+- 結果表示: `AIFeedbackResultView`
+- モード: praise / empathy / advice / courage
 
 ## アクセシビリティ
-- すべての画像に `.accessibilityLabel` を設定
-- フォントは Dynamic Type 対応（`Font.body`, `Font.title2` 等を使う）
-- タップ領域は最低44×44pt
+- 装飾画像は `.accessibilityHidden(true)`、意味のある操作は `accessibilityLabel`
+- UI Test 用 ID（例）: `tab_home`, `home_diary_editor`, `home_submit_button`
+- タップ領域は最低 44pt（`winChip` 等）
 
-## ナビゲーション構成
-- ルート: `ContentView.swift` の TabView（3タブ）
-  - タブ1: タイムライン（`TimelineView`）
-  - タブ2: 書く（`PostView`）
-  - タブ3: マイページ（`ProfileView`）
+## ナビゲーション構成（現行）
+
+`ContentView.swift` の TabView（3タブ）:
+
+| タブ | View | navigationTitle |
+|------|------|-----------------|
+| いま | `HomeView` | いま |
+| きろく | `HistoryView` | きろく |
+| マイページ | `ProfileView` | マイページ |
+
+認証・オンボーディングは `RootView`（`YellMeApp.swift`）で分岐。
+
+**きろく → マイページ**: `NavigationStack` に push せず、`ContentView` の `TabView` でマイページタブへ切り替える（日次詳細の `NavigationLink` との競合を防ぐ）。

@@ -20,10 +20,12 @@
 		47E662DD6D47D218E3FB64C2 /* YellMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1312DF664D9B76E05D3DA45F /* YellMeApp.swift */; };
 		49F286DDB8F95E826DC18617 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF45275C9D57C606E71D435 /* HistoryView.swift */; };
 		6A6155AC11238C1E152E87E9 /* FeedbackModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EDF14BF54FF5CF45A34FF4 /* FeedbackModels.swift */; };
+		6E3CFD3B1A4488046E71A4FE /* InteractivePopGestureEnabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E934F285D6EC2E6852C001 /* InteractivePopGestureEnabler.swift */; };
 		7C1E46A4E62E57E9AD5FA140 /* DailyJournalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7573798927344627E2C69A6A /* DailyJournalStore.swift */; };
 		7E45309E809923D4308CE585 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E5504765B575A14351AE5DF /* FirebaseAuth */; };
 		872178F872F434CB6EDEEB8B /* DailyJournalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0ECF4FDAF7D147DD7AC1897 /* DailyJournalStoreTests.swift */; };
 		88307F5034A29AE5245ECB5B /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1DD5F3A79AAFBC75E27DCE /* AuthService.swift */; };
+		A7197BA7F4DE37C88284A064 /* UITestingSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489507C8A90596C1090BAA8B /* UITestingSupport.swift */; };
 		A7D1665CE2FCC5B4ABDC2CBD /* FeedbackComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D85BCBB90A91F2184A8D4A /* FeedbackComponents.swift */; };
 		B480107A721362883C50B8C3 /* SubscriptionPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = E457000C2B7E480D511C87F5 /* SubscriptionPlan.swift */; };
 		B667DBACE44BEC688D2268E5 /* DailyJournalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5085EA5101E075126D1308 /* DailyJournalModels.swift */; };
@@ -32,10 +34,18 @@
 		DD23BCB489741FB2CCB74917 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF36484C92F998EAAAFE2B39 /* HomeView.swift */; };
 		DEE094F79896D8D376279F4F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B420EFECB63314C20D8731DC /* ContentView.swift */; };
 		E287168C59D54BCAFD190D42 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29A6D6099B837804BC0CE0 /* OnboardingView.swift */; };
+		E8216825153856D0295FCAA4 /* YellMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB3C6FDB78F87A344A9F4AF /* YellMeUITests.swift */; };
 		E90412F4253FF291858E9D6F /* StoreKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D7EAC86B60170F985BA1B3 /* StoreKitService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F3ED4A332F1D116325DDAA09 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 623220ED5CA0BC3FB59588E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB9570B05A2A36EC12CD8F61;
+			remoteInfo = YellMe;
+		};
 		FB892BB7BFFBC22330A38792 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 623220ED5CA0BC3FB59588E7 /* Project object */;
@@ -50,9 +60,12 @@
 		0DCED52DA775A3296595B175 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1312DF664D9B76E05D3DA45F /* YellMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YellMeApp.swift; sourceTree = "<group>"; };
 		16646A1023122EBC706EABC7 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
+		21E934F285D6EC2E6852C001 /* InteractivePopGestureEnabler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopGestureEnabler.swift; sourceTree = "<group>"; };
+		2AB3C6FDB78F87A344A9F4AF /* YellMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YellMeUITests.swift; sourceTree = "<group>"; };
 		2B5085EA5101E075126D1308 /* DailyJournalModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyJournalModels.swift; sourceTree = "<group>"; };
 		3EF40470D6E859EE45EFDD4F /* ClaudeAPIKeyPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeAPIKeyPolicy.swift; sourceTree = "<group>"; };
 		3FB7454DFC4D7B042BE30E17 /* ClaudeAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeAPIKeyStore.swift; sourceTree = "<group>"; };
+		489507C8A90596C1090BAA8B /* UITestingSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestingSupport.swift; sourceTree = "<group>"; };
 		524568A496AA882B528047A5 /* YellMe.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = YellMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58D85BCBB90A91F2184A8D4A /* FeedbackComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackComponents.swift; sourceTree = "<group>"; };
 		6A29A6D6099B837804BC0CE0 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -67,6 +80,7 @@
 		B3D2C10188B8CC024BE5C851 /* DailyEntryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyEntryDetailView.swift; sourceTree = "<group>"; };
 		B420EFECB63314C20D8731DC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BF36484C92F998EAAAFE2B39 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		C127957DFCD1D6C929119504 /* YellMeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = YellMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E457000C2B7E480D511C87F5 /* SubscriptionPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionPlan.swift; sourceTree = "<group>"; };
 		E4D7EAC86B60170F985BA1B3 /* StoreKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitService.swift; sourceTree = "<group>"; };
 		E56F35DEEAD82386C5C75BC1 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
@@ -96,11 +110,20 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		3AFE305B1BE2B0335CE85DF4 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				2AB3C6FDB78F87A344A9F4AF /* YellMeUITests.swift */,
+			);
+			path = UITests;
+			sourceTree = "<group>";
+		};
 		3B6606846181B0C2E0665FC4 = {
 			isa = PBXGroup;
 			children = (
 				71E756A214FC409E18298F41 /* Sources */,
 				92299117A5D5C3748DC0DD79 /* Tests */,
+				3AFE305B1BE2B0335CE85DF4 /* UITests */,
 				4EAA73420E0BDDC5C375224F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -118,6 +141,7 @@
 			children = (
 				524568A496AA882B528047A5 /* YellMe.app */,
 				FE64D150667FFD7AA185D257 /* YellMeTests.xctest */,
+				C127957DFCD1D6C929119504 /* YellMeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,6 +150,8 @@
 			isa = PBXGroup;
 			children = (
 				B420EFECB63314C20D8731DC /* ContentView.swift */,
+				21E934F285D6EC2E6852C001 /* InteractivePopGestureEnabler.swift */,
+				489507C8A90596C1090BAA8B /* UITestingSupport.swift */,
 				1312DF664D9B76E05D3DA45F /* YellMeApp.swift */,
 			);
 			path = App;
@@ -228,6 +254,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C774AD670F0216B96D09454B /* YellMeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4F0CAC4FCD199A2DB3487FE /* Build configuration list for PBXNativeTarget "YellMeUITests" */;
+			buildPhases = (
+				36BE69B1FC89DF2326559C45 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CD388E16F2390DB6157FE2C /* PBXTargetDependency */,
+			);
+			name = YellMeUITests;
+			packageProductDependencies = (
+			);
+			productName = YellMeUITests;
+			productReference = C127957DFCD1D6C929119504 /* YellMeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		CB9570B05A2A36EC12CD8F61 /* YellMe */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E099426A137ACAB0F5DFBD5A /* Build configuration list for PBXNativeTarget "YellMe" */;
@@ -276,6 +320,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					C774AD670F0216B96D09454B = {
+						TestTargetID = CB9570B05A2A36EC12CD8F61;
+					};
 					CB9570B05A2A36EC12CD8F61 = {
 						DevelopmentTeam = NXFZ5AUX62;
 					};
@@ -300,6 +347,7 @@
 			targets = (
 				CB9570B05A2A36EC12CD8F61 /* YellMe */,
 				F24D5F8F3CA0D3DDF4D907CC /* YellMeTests */,
+				C774AD670F0216B96D09454B /* YellMeUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -316,6 +364,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		36BE69B1FC89DF2326559C45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8216825153856D0295FCAA4 /* YellMeUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6E85A53C6D5395251402C3D5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -342,12 +398,14 @@
 				0B607032280E8113A091B523 /* FirebaseService.swift in Sources */,
 				49F286DDB8F95E826DC18617 /* HistoryView.swift in Sources */,
 				DD23BCB489741FB2CCB74917 /* HomeView.swift in Sources */,
+				6E3CFD3B1A4488046E71A4FE /* InteractivePopGestureEnabler.swift in Sources */,
 				256C021515E47FB89AAA6730 /* MockData.swift in Sources */,
 				E287168C59D54BCAFD190D42 /* OnboardingView.swift in Sources */,
 				34A705208E7733CD63D98652 /* ProfileView.swift in Sources */,
 				0A3A54474D1FA9E0C6BFEBF3 /* Secrets.swift in Sources */,
 				E90412F4253FF291858E9D6F /* StoreKitService.swift in Sources */,
 				B480107A721362883C50B8C3 /* SubscriptionPlan.swift in Sources */,
+				A7197BA7F4DE37C88284A064 /* UITestingSupport.swift in Sources */,
 				23AFFB2A85D810B968B5BA6C /* User.swift in Sources */,
 				47E662DD6D47D218E3FB64C2 /* YellMeApp.swift in Sources */,
 			);
@@ -356,6 +414,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3CD388E16F2390DB6157FE2C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB9570B05A2A36EC12CD8F61 /* YellMe */;
+			targetProxy = F3ED4A332F1D116325DDAA09 /* PBXContainerItemProxy */;
+		};
 		6969EA23B9EED108B05A0CCB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CB9570B05A2A36EC12CD8F61 /* YellMe */;
@@ -364,6 +427,23 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		2312C6EF0C7AF89C4E6BE512 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.yellme.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = YellMe;
+			};
+			name = Debug;
+		};
 		26D4F750AF71E33C56F1FDC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -398,7 +478,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -417,7 +497,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -428,6 +508,23 @@
 				SWIFT_VERSION = 5.9;
 			};
 			name = Debug;
+		};
+		55FE7187A942F04F5224B715 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.yellme.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = YellMe;
+			};
+			name = Release;
 		};
 		609BE33B82A430EBBFC62756 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -463,7 +560,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -476,7 +573,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -531,12 +628,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.YellMeTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.yellme.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/YellMe.app/YellMe";
@@ -547,12 +645,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.YellMeTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.takahiro.yellme.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/YellMe.app/YellMe";
@@ -567,6 +666,15 @@
 			buildConfigurations = (
 				EC92620B7911DFBD461D5649 /* Debug */,
 				A3806DB1DB456AC73D0A72FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D4F0CAC4FCD199A2DB3487FE /* Build configuration list for PBXNativeTarget "YellMeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2312C6EF0C7AF89C4E6BE512 /* Debug */,
+				55FE7187A942F04F5224B715 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

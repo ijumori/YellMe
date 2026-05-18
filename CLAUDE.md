@@ -8,6 +8,7 @@
 | 最低iOS | 17.0 |
 | 言語 | Swift 5.9 / SwiftUI / MVVM |
 | AI | Claude API（claude-sonnet-4-6） |
+| 現バージョン | 1.0.1（build 8） |
 
 ---
 
@@ -19,7 +20,24 @@ xcodebuild -project YellMe.xcodeproj -scheme YellMe \
   -sdk iphonesimulator \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 open YellMe.xcodeproj
+
+# App Store 提出用: Archive → IPA
+./scripts/archive-export-appstore.sh
+# API キーでアップロードまで
+# export ASC_API_KEY_ID=... ASC_API_ISSUER_ID=... ASC_API_KEY_PATH=.../AuthKey_xxx.p8
+# ./scripts/archive-export-appstore.sh --upload
+
+# メタデータ・スクショ・プレビューを ASC に一括反映（Apple ID 認証）
+# export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+# bundle exec fastlane upload_all
 ```
+
+### fastlane（ASCアップロード）
+- `fastlane/Fastfile` にレーン定義（`upload_all` / `asc_screenshots` / `bump_build` / `upload_build` / `submit_review`）
+- `fastlane/metadata/ja/` — 概要・プロモ・キーワード等（正本）
+- `AppStoreMetadata/ja/` — ASC API 用テキスト（`fastlane/metadata/ja/` と同期すること）
+- メタデータ運用: `.claude/docs/metadata-sources.md`
+- `bundle exec fastlane upload_all` で一括アップロード（Apple ID 認証）
 
 ### スラッシュコマンド
 | コマンド | 用途 |
@@ -28,8 +46,11 @@ open YellMe.xcodeproj
 | `/yellme-gen` | XcodeGen再生成 |
 | `/yellme-new-feature` | 新機能の雛形生成 |
 | `/yellme-check` | プロジェクト全体診断 |
+| `/yellme-arch` | 設計・アーキテクチャ |
 | `/yellme-firebase` | Firebase設定ガイド |
-| `/yellme-review` | Swiftコードセルフレビュー |
+| `/yellme-ai` | Claude API・プロンプト |
+| `/yellme-ui` | SwiftUI・UI/UX |
+| `/yellme-review` | コードレビュー |
 
 ---
 
@@ -37,16 +58,22 @@ open YellMe.xcodeproj
 
 ```
 Sources/
-├── App/          YellMeApp.swift（Firebase初期化） / ContentView.swift（TabView）
+├── App/          YellMeApp.swift / ContentView.swift / InteractivePopGestureEnabler.swift / UITestingSupport.swift
 ├── Core/
-│   ├── Models/   Post.swift / User.swift / MockData.swift / DailyJournalModels.swift
-│   └── Services/ ClaudeService.swift / FirebaseService.swift / DailyJournalStore.swift / Secrets.swift【gitignore】
+│   ├── Models/   DailyJournalModels.swift / FeedbackModels.swift / User.swift / MockData.swift
+│   └── Services/ ClaudeService.swift / FirebaseService.swift / AuthService.swift / DailyJournalStore.swift / StoreKitService.swift / Secrets.swift【gitignore】
 └── Features/
-    ├── Home/     HomeView.swift（いまタブ）
-    ├── History/  HistoryView.swift / DailyEntryDetailView.swift（きろくタブ）
-    ├── Timeline/ TimelineView.swift（未使用・参照用）
-    ├── Post/     PostView.swift（共有 UI 部品・プレビュー用）
-    └── Profile/  ProfileView.swift
+    ├── Home/       HomeView.swift（いまタブ）
+    ├── History/    HistoryView.swift / DailyEntryDetailView.swift（きろくタブ）
+    ├── Profile/    ProfileView.swift（マイページ）
+    ├── Auth/       AuthView.swift
+    └── Onboarding/ OnboardingView.swift
+Tests/              YellMeTests（Unit: DailyJournalStoreTests）
+UITests/            YellMeUITests（タブ遷移・記録フロー）
+scripts/            Archive・ASCアップロード・スクショ生成等
+fastlane/           deliver メタデータ・Fastfile
+guidelines/         アーキテクチャ・UI・Firebase・コーディング規約
+.swiftlint.yml      SwiftLint 設定
 ```
 
 ---
@@ -81,25 +108,18 @@ Sources/
 
 ---
 
----
-
 ## エージェントルーティング
 
-**チーフとして**: 指示を受けたら自分では実装せず、最適なエージェントを起動してタスクを委譲する。
+**チーフとして**: 指示を受けたら最適なエージェントを起動してタスクを委譲する。
 複合タスクは複数エージェントを並列起動し、結果を統合して報告する。
 
-| キーワード | エージェント | スキル |
+| キーワード | エージェント | コマンド |
 |---|---|---|
 | 設計・MVVM・XcodeGen・project.yml・actor | **Arch** | `/yellme-arch` |
 | Firebase・Auth・Firestore・DTO・Rules | **Blaze** | `/yellme-firebase` |
 | Claude API・プロンプト・FeedbackMode・AI | **Nova** | `/yellme-ai` |
 | SwiftUI・View・UI・アニメ・デザイン | **Pixel** | `/yellme-ui` |
 | レビュー・バグ・テスト・クラッシュ・品質 | **Shield** | `/yellme-review` |
-
-### 複合タスク例
-- 「Firebase Authを実装して」→ **Blaze**（実装）+ **Arch**（設計検証）並列起動
-- 「投稿画面を作って」→ **Pixel**（View）+ **Arch**（ViewModel設計）並列起動
-- 「AIフィードバックが遅い」→ **Nova**（プロンプト）+ **Shield**（コード診断）並列起動
 
 ---
 
@@ -108,3 +128,4 @@ Sources/
 @.claude/docs/api-spec.md
 @.claude/docs/firestore-schema.md
 @.claude/docs/todo.md
+@.claude/docs/ios-test-guide.md

@@ -9,15 +9,26 @@ actor StoreKitService {
         premiumMonthlyProductID = bundle.object(forInfoDictionaryKey: "YELLME_PREMIUM_PRODUCT_ID") as? String ?? ""
     }
 
+    /// App Store から商品メタデータを取得（審査環境ではネットワークや ASC 設定で空配列になり得るためリトライする）。
     func fetchPremiumProduct() async throws -> Product {
         guard !premiumMonthlyProductID.isEmpty else {
             throw BillingError.missingProductConfiguration
         }
-        let products = try await Product.products(for: [premiumMonthlyProductID])
-        guard let product = products.first else {
-            throw BillingError.productNotFound
+        var lastError: Error = BillingError.productNotFound
+        for attempt in 0..<4 {
+            if attempt > 0 {
+                let ns = 400_000_000 + UInt64(attempt) * 200_000_000
+                try await Task.sleep(nanoseconds: ns)
+            }
+            do {
+                let products = try await Product.products(for: [premiumMonthlyProductID])
+                if let product = products.first { return product }
+                lastError = BillingError.productNotFound
+            } catch {
+                lastError = error
+            }
         }
-        return product
+        throw lastError
     }
 
     func currentTier() async -> SubscriptionTier {
@@ -35,6 +46,9 @@ actor StoreKitService {
     }
 
     func purchasePremium() async throws -> SubscriptionTier {
+        guard AppStore.canMakePayments else {
+            throw BillingError.paymentsDisabled
+        }
         let product = try await fetchPremiumProduct()
         let result = try await product.purchase()
         switch result {
@@ -72,6 +86,7 @@ actor StoreKitService {
 enum BillingError: LocalizedError {
     case missingProductConfiguration
     case productNotFound
+    case paymentsDisabled
     case unverifiedTransaction
     case userCancelled
     case pending
@@ -82,7 +97,9 @@ enum BillingError: LocalizedError {
         case .missingProductConfiguration:
             return "課金商品の設定が未完了です。"
         case .productNotFound:
-            return "購入商品が見つかりません。"
+            return "App Store からプランを取得できませんでした。通信を確認のうえ、しばらくしてから再度お試しください。"
+        case .paymentsDisabled:
+            return "この端末では App 内課金が無効になっています（ペアレンタルコントロール等）。設定をご確認ください。"
         case .unverifiedTransaction:
             return "購入の検証に失敗しました。"
         case .userCancelled:

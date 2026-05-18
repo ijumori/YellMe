@@ -5,7 +5,7 @@ cd "/Users/takahironishii/マイドライブ/04.Dev/YellMe" && \
 xcodebuild -project YellMe.xcodeproj \
   -scheme YellMe \
   -sdk iphonesimulator \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' \
   build 2>&1 | grep -E "error:|warning:|BUILD"
 ```
 

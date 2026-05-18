@@ -130,6 +130,8 @@ struct DailyEntry: Identifiable, Codable, Equatable, Hashable {
 
 // MARK: - コンパニオン
 
+/// コンパニオンの成長段階（累計 XP で決まる）。
+/// しきい値: たまご 0+ → ひな 5+ → そだち 15+ → なかま 30+ → きらめき 50+
 enum CompanionPhase: String, Codable, CaseIterable, Equatable {
     case egg
     case hatchling

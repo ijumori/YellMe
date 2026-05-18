@@ -1,0 +1,34 @@
+included:
+  - Sources
+  - Tests
+  - UITests
+
+excluded:
+  - build
+  - vendor
+  - .build
+  - DerivedData
+
+line_length:
+  warning: 140
+  ignores_urls: true
+
+type_body_length:
+  warning: 450
+  error: 550
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  excluded:
+    - id
+    - x
+    - y
+    - i
+    - m
+    - d
+    - t
+    - f
+
+reporter: xcode

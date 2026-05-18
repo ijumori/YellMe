@@ -1,3 +1,2 @@
 app_identifier("com.takahiro.yellme")
-apple_id("ijumorimori@gmail.com")
-team_id("NXFZ5AUX62")
+# apple_id は App Store Connect API キー利用時は未設定で可

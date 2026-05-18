@@ -1,30 +1,33 @@
 # 未実装TODO
 
-## Phase 1（優先）
+## Phase 1（完了）
 - [x] Firebase Auth（Apple Sign In）
 - [x] オンボーディング画面
 - [x] Firestore日次記録CRUD（基本保存/取得）
-- [ ] プロフィール編集・アバター
+- [x] プロフィール編集（表示名・自己紹介）
 
 ## Phase 2
 - [ ] AI会話モード
-- [ ] ストリーク
+- [ ] ストリーク表示の強化（UIバッジ等）
 - [ ] プッシュ通知（FCM）
 
-## Phase 3
-- [x] StoreKit 2 サブスクリプション（基本導線）
+## Phase 3（基本完了）
+- [x] StoreKit 2 サブスクリプション（購入・復元・ゲート）
 - [x] AIエール回数制限（Free 1 / Premium 3）
 - [x] プレミアム機能ロック（着せ替え/月次DL）
-- [ ] StoreKit本番化（商品ID確定・検証強化）
+- [ ] アバター着せ替えUI実装
 
-## App Store 審査対応
-- [x] プライバシーポリシー・サポートページ公開（GitHub Pages）
-- [x] 利用規約（EULA）ページ作成・公開
+## 品質・テスト
+- [x] SwiftLint 設定（`.swiftlint.yml`）
+- [x] Unit Test（`DailyJournalStoreTests` 3件）
+- [x] UI Test ターゲット（`YellMeUITests` 2件）
+- [ ] テストカバレッジ拡大（ViewModel / ClaudeService）
+
+## App Store
+- [x] プライバシーポリシー・サポートページ・利用規約公開（GitHub Pages）
 - [x] サブスク詳細・法的リンクをアプリ内に追加（ProfileView）
 - [x] App Store 説明文にサブスク自動更新条件追記
 - [x] iPad クラッシュ対応（TARGETED_DEVICE_FAMILY=1、iPhone専用化）
-- [x] Apple Distribution 証明書作成・Build 4 アップロード
-- [ ] App Store Connect で EULA URL 設定（手動）
-- [ ] 有料アプリ利用規約 (Paid Apps) Active 確認（手動）
-- [ ] 輸出コンプライアンス回答（手動）
-- [ ] 審査に再提出（手動）
+- [x] v1.0.0 公開（build 7）
+- [x] v1.0.1 メタデータ更新・審査提出（build 8）
+- [ ] v1.0.1 審査通過待ち

@@ -7,6 +7,10 @@ import StoreKit
 struct YellMeApp: App {
     @StateObject private var appState = AppState()
 
+    init() {
+        UITestingSupport.prepareIfNeeded()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
@@ -24,6 +28,8 @@ class AppState: ObservableObject {
     @Published var subscriptionTier: SubscriptionTier
     @Published var isBillingBusy = false
     @Published var billingMessage: String?
+    /// `nil` = 未確認。審査で問題になりやすい「プラン取得失敗」を早期に検知する。
+    @Published private(set) var subscriptionCatalogAvailable: Bool?
 
     private var authStateHandle: AuthStateDidChangeListenerHandle?
     private var billingObserverTask: Task<Void, Never>?
@@ -68,6 +74,16 @@ class AppState: ObservableObject {
         }
     }
 
+    /// App Store 上のサブスク商品が `Product.products` で取得できるか確認（契約・商品ID・メタデータ不備だと失敗する）。
+    func refreshSubscriptionCatalogAvailability() async {
+        do {
+            _ = try await StoreKitService.shared.fetchPremiumProduct()
+            subscriptionCatalogAvailable = true
+        } catch {
+            subscriptionCatalogAvailable = false
+        }
+    }
+
     func startBillingMonitoring() {
         guard billingObserverTask == nil else { return }
         billingObserverTask = Task { [weak self] in
@@ -88,6 +104,7 @@ class AppState: ObservableObject {
         do {
             let tier = try await StoreKitService.shared.purchasePremium()
             setSubscriptionTier(tier)
+            subscriptionCatalogAvailable = true
             billingMessage = tier == .premium ? "Premiumを有効化しました。" : nil
         } catch {
             billingMessage = error.localizedDescription
@@ -151,6 +168,7 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.3), value: hasCompletedOnboarding)
         .task {
             await appState.refreshSubscriptionTier()
+            await appState.refreshSubscriptionCatalogAvailability()
             appState.startBillingMonitoring()
         }
     }

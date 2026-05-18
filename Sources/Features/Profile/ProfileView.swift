@@ -3,6 +3,13 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var viewModel = ProfileViewModel()
+    @FocusState private var profileEditFocus: ProfileEditField?
+
+    private enum ProfileEditField: Hashable {
+        case displayName
+        case bio
+    }
+
     #if DEBUG
     @State private var showKeychainDevAlert = false
     @State private var keychainDevAlertText = ""
@@ -50,7 +57,16 @@ struct ProfileView: View {
                     #endif
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("マイページ")
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("完了") {
+                        profileEditFocus = nil
+                    }
+                }
+            }
             .task {
                 await viewModel.fetchData(appState: appState)
             }
@@ -130,10 +146,12 @@ struct ProfileView: View {
                 .textInputAutocapitalization(.words)
                 .autocorrectionDisabled()
                 .textFieldStyle(.roundedBorder)
+                .focused($profileEditFocus, equals: .displayName)
 
             TextField("自己紹介（任意）", text: $viewModel.bio, axis: .vertical)
                 .lineLimit(3...5)
                 .textFieldStyle(.roundedBorder)
+                .focused($profileEditFocus, equals: .bio)
 
             if let message = viewModel.message {
                 Text(message)
@@ -214,6 +232,29 @@ struct ProfileView: View {
                     .foregroundStyle(.secondary)
             }
 
+            if appState.subscriptionCatalogAvailable == false, appState.subscriptionTier != .premium {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("App Store からプラン情報を取得できていません。購入に進めない場合は、通信のあとでもう一度お試しください。")
+                            .font(.caption)
+                            .foregroundStyle(.primary)
+                        Button {
+                            Task { await appState.refreshSubscriptionCatalogAvailability() }
+                        } label: {
+                            Label("プラン情報を再取得", systemImage: "arrow.clockwise")
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(appState.isBillingBusy)
+                    }
+                }
+                .padding(10)
+                .background(Color.orange.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
             if appState.subscriptionTier != .premium {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("エールミー Premium（月額）")
@@ -231,7 +272,7 @@ struct ProfileView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(appState.isBillingBusy)
+                .disabled(appState.isBillingBusy || appState.subscriptionCatalogAvailable == false)
             }
 
             Button {

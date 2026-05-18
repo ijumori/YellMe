@@ -1,3 +1,7 @@
+# Python
+__pycache__/
+*.pyc
+
 # Xcode
 *.xcuserstate
 *.xcworkspace/xcuserdata/
@@ -12,6 +16,9 @@ DerivedData/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata/
+
+# Build artifacts
+build/
 
 # macOS
 .DS_Store
@@ -39,3 +46,20 @@ GoogleService-Info.plist
 
 # 不要ファイル退避
 DELETEBOX/
+
+# Python venv
+.venv-*/
+
+# App Store Connect アップロード用（fastlane deliver のコピー先・Bundler）
+AppStoreMetadata/deliver/
+vendor/
+.bundle/
+
+# 素材・録画（大容量ファイル）
+*.MP4
+*.mp4.bak
+*.gem
+iCloud写真/
+iCloud写真.zip
+files/
+files.zip
